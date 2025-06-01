@@ -366,13 +366,16 @@ impl CodeBlock {
 }
 
 fn simple_highlighting(ui: &Ui, text: &str, extension: &str) -> egui::text::LayoutJob {
-    egui_extras::syntax_highlighting::highlight(
-        ui.ctx(),
-        ui.style(),
-        &egui_extras::syntax_highlighting::CodeTheme::from_style(ui.style()),
+    let mut job = egui::text::LayoutJob::default();
+    job.append(
         text,
-        extension,
-    )
+        0.0,
+        egui::TextFormat {
+            color: ui.visuals().strong_text_color(),
+            ..Default::default()
+        },
+    );
+    job
 }
 
 fn plain_highlighting(ui: &Ui, text: &str) -> egui::text::LayoutJob {
@@ -380,10 +383,10 @@ fn plain_highlighting(ui: &Ui, text: &str) -> egui::text::LayoutJob {
     job.append(
         text,
         0.0,
-        egui::TextFormat::simple(
-            TextStyle::Monospace.resolve(ui.style()),
-            ui.style().visuals.text_color(),
-        ),
+        egui::TextFormat {
+            color: ui.visuals().text_color(),
+            ..Default::default()
+        },
     );
     job
 }
@@ -564,15 +567,6 @@ pub fn scroll_cache<'a>(cache: &'a mut CommonMarkCache, id: &egui::Id) -> &'a mu
 /// Should be called before any rendering
 pub fn prepare_show(cache: &mut CommonMarkCache, ctx: &egui::Context) {
     if !cache.has_installed_loaders {
-        // Even though the install function can be called multiple times, its not the cheapest
-        // so we ensure that we only call it once.
-        // This could be done at the creation of the cache, however it is better to keep the
-        // cache free from egui's Ui and Context types as this allows it to be created before
-        // any egui instances. It also keeps the API similar to before the introduction of the
-        // image loaders.
-        #[cfg(feature = "embedded_image")]
-        crate::data_url_loader::install_loader(ctx);
-
         egui_extras::install_image_loaders(ctx);
         cache.has_installed_loaders = true;
     }

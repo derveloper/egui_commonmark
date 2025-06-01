@@ -8,7 +8,7 @@ license.workspace = true
 rust-version.workspace = true
 repository.workspace = true
 
-description = "Shared code for egui_commonmark and egui_commonmark_macros"
+description = "Backend for egui_commonmark"
 keywords = ["commonmark", "egui"]
 categories = ["gui"]
 readme = "README.md"
@@ -16,9 +16,9 @@ documentation = "https://docs.rs/egui_commonmark_backend"
 include = ["**/*.rs", "LICENSE-MIT", "LICENSE-APACHE", "Cargo.toml"]
 
 [dependencies]
-pulldown-cmark = { workspace = true }
-egui_extras = { workspace = true }
 egui = { workspace = true }
+egui_extras = { workspace = true }
+pulldown-cmark = { workspace = true }
 
 data-url = {  version = "0.3.1", optional = true }
 syntect = { version = "5.0.0", optional = true, default-features = false, features = [
