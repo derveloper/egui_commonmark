@@ -1,4 +1,4 @@
-use egui::{self, epaint, NumExt, RichText, Sense, TextStyle, Ui, Vec2};
+use egui::{self, epaint, NumExt, RichText, Sense, TextStyle, Ui, Vec2, StrokeKind};
 
 #[inline]
 pub fn rule(ui: &mut Ui, end_line: bool) {
@@ -115,9 +115,10 @@ pub fn code_block<'t>(
         where_to_put_background,
         epaint::RectShape::new(
             frame_rect,
-            ui.style().noninteractive().rounding,
+            ui.style().noninteractive().corner_radius,
             ui.visuals().extreme_bg_color,
             ui.visuals().widgets.noninteractive.bg_stroke,
+            StrokeKind::Middle,
         ),
     );
 
@@ -200,9 +201,10 @@ impl<'a> egui::Widget for ImmutableCheckbox<'a> {
             let (small_icon_rect, big_icon_rect) = ui.spacing().icon_rectangles(rect);
             ui.painter().add(epaint::RectShape::new(
                 big_icon_rect.expand(visuals.expansion),
-                visuals.rounding,
+                visuals.corner_radius,
                 visuals.bg_fill,
                 visuals.bg_stroke,
+                StrokeKind::Middle,
             ));
 
             if *checked {
@@ -224,11 +226,11 @@ impl<'a> egui::Widget for ImmutableCheckbox<'a> {
 
 pub fn blockquote(ui: &mut Ui, accent: egui::Color32, add_contents: impl FnOnce(&mut Ui)) {
     let start = ui.painter().add(egui::Shape::Noop);
-    let response = egui::Frame::none()
+    let response = egui::Frame::NONE
         // offset the frame so that we can use the space for the horizontal line and other stuff
         // By not using a separator we have better control
         .outer_margin(egui::Margin {
-            left: 10.0,
+            left: 10,
             ..Default::default()
         })
         .show(ui, add_contents)
